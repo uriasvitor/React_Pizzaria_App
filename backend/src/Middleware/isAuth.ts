@@ -29,6 +29,8 @@ export function isAuth(
         )as Paylood;
 
         console.log(sub)
+        
+        req.user_id = sub    
 
         return next()
 
