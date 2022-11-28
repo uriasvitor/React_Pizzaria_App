@@ -5,9 +5,41 @@ import logo_img from   '../../../public/logo.svg'
 import styles from '../../../styles/Home.module.scss';
 import Image from 'next/image';
 import Link from 'next/link'
-
+import { FormEvent, useState, useContext } from 'react'
+import { AuthContext } from '../../contexts/AuthContext';
+import { toast } from 'react-toastify';
 
 export default function SignUp() {
+  const {signUp} = useContext(AuthContext)
+
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+  const [loading, setLoading] = useState(false)
+
+  async function handleSignUp(e:FormEvent){
+    e.preventDefault()
+
+
+    if(name ==='' || email === '' || password ===''){
+      toast.warn("Por favor, preencha todos os campos.")
+      return;
+    }
+
+    setLoading(true)
+
+
+    let data = {
+      name,
+      email,
+      password
+    }
+  
+    await signUp(data)
+    
+    setLoading(false);
+  }
   return (
     <>
       <Head>
@@ -20,25 +52,31 @@ export default function SignUp() {
           <h1>Criar conta</h1>
 
 
-          <form>
+          <form onSubmit={handleSignUp}>
             <Input
               placeholder='Digite seu nome'
               type='text'
+              value={name}
+              onChange={(e)=>setName(e.target.value)}
             />
 
             <Input
               placeholder='Digite seu email'
               type='email'
+              value={email}
+              onChange={(e)=> setEmail(e.target.value)}
             />
 
             <Input
               placeholder='Digite sua Senha'
               type='password'
+              value={password}
+              onChange={(e)=> setPassword(e.target.value)}
             />
 
             <Button
               type="submit"
-              loading={false}
+              loading={loading}
             >
               Cadastrar
             </Button>

@@ -23,7 +23,7 @@ const upload = multer(uploadConfig.upload("./tmp"))
 
 router.post('/users', new CreateUserController().handle)
 
-router.post('/session', new AuthUserController().handle)
+router.post('/session',new AuthUserController().handle)
 
 router.get('/me', isAuth, new DetailUserController().handle)
 

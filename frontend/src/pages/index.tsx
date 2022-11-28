@@ -7,6 +7,9 @@ import styles from '../../styles/Home.module.scss';
 import Image from 'next/image';
 import Link from 'next/link'
 import {AuthContext} from '../contexts/AuthContext'
+import { toast } from 'react-toastify';
+import { GetServerSideProps } from 'next';
+import { canSSRGuest } from '../utils/canSSRGuest';
 
 export default function Home() {
   const { signIn } = useContext(AuthContext)
@@ -19,13 +22,19 @@ export default function Home() {
   async function handleLogin(event: FormEvent){
     event.preventDefault();
 
+    if(email == '' || password === ''){
+      toast.warn("Por favor, preencha os campos.")
+      return;
+    }
+    setLoading(true)
+
     let data = {
       email,
       password
     }
 
     await signIn(data)
-
+    setLoading(false)
   }
   return (
     <>
@@ -56,7 +65,7 @@ export default function Home() {
 
             <Button
               type="submit"
-              loading={false}
+              loading={loading}
             >
               Acessar
             </Button>
@@ -70,3 +79,10 @@ export default function Home() {
     </>
   )
 }
+
+
+export const getServerSideProps =  canSSRGuest(async (ctx)=>{
+  return {
+    props:{}
+  }
+})
