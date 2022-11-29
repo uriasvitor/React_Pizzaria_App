@@ -1,20 +1,25 @@
-import { FormEvent, useContext, useState } from 'react';
-import Button from '../components/ui/Button/Index';
-import Input from '../components/ui/Input';
-import Head from 'next/head';
-import logo_img from '../../public/logo.svg';
-import styles from '../../styles/Home.module.scss';
+import { useContext, FormEvent, useState } from 'react'
+
+import Head from 'next/head'
 import Image from 'next/image';
-import Link from 'next/link'
-import {AuthContext} from '../contexts/AuthContext'
-import { toast } from 'react-toastify';
-import { GetServerSideProps } from 'next';
-import { canSSRGuest } from '../utils/canSSRGuest';
+import styles from '../../styles/home.module.scss';
+
+import logoImg from '../../public/logo.svg';
+
+import { Input } from '../components/ui/Input'
+import { Button } from '../components/ui/Button'
+import { toast } from 'react-toastify'
+
+import { AuthContext } from '../contexts/AuthContext'
+
+import Link from 'next/link';
+
+import { canSSRGuest } from '../utils/canSSRGuest'
 
 export default function Home() {
   const { signIn } = useContext(AuthContext)
 
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('');
 
   const [loading, setLoading] = useState(false);
@@ -22,11 +27,12 @@ export default function Home() {
   async function handleLogin(event: FormEvent){
     event.preventDefault();
 
-    if(email == '' || password === ''){
-      toast.warn("Por favor, preencha os campos.")
+    if(email === '' || password === ''){
+      toast.error("Preencha os campos")
       return;
     }
-    setLoading(true)
+
+    setLoading(true);
 
     let data = {
       email,
@@ -34,55 +40,56 @@ export default function Home() {
     }
 
     await signIn(data)
-    setLoading(false)
+
+    setLoading(false);
   }
+
   return (
     <>
-      <Head>
-        <title>Suejeito Homem</title>
-      </Head>
-      <div className={styles.containerCenter}>
-        <Image src={logo_img} alt="Logo Sujeito Pizzaria"></Image>
+    <Head>
+      <title>SujeitoPizza - Faça seu login</title> 
+    </Head>
+    <div className={styles.containerCenter}>
+      <Image src={logoImg} alt="Logo Sujeito Pizzaria" />
 
-        <div className={styles.login}>
+      <div className={styles.login}>
+        <form onSubmit={handleLogin}>
+          <Input
+            placeholder="Digite seu email"
+            type="text"
+            value={email}
+            onChange={ (e) => setEmail(e.target.value) }
+          />
 
-        <h1>Fazer login</h1>
+          <Input
+            placeholder="Sua senha"
+            type="password"
+            value={password}
+            onChange={ (e) => setPassword(e.target.value) }
+          />
+          
+          <Button
+            type="submit"
+            loading={loading}
+          >
+            Acessar
+          </Button>
+        </form>
 
-          <form onSubmit={handleLogin}>
-            <Input
-              placeholder='Digite seu email'
-              type='email'
-              value={email}
-              onChange={(e)=> setEmail(e.target.value)}
-            />
+        <Link href="/signup">
+           <a className={styles.text}>Nao possui uma conta? Cadastre-se</a>
+        </Link>
 
-            <Input
-              placeholder='Digite sua Senha'
-              type='password'
-              value={password}
-              onChange={(e)=> setPassword(e.target.value)}
-            />
-
-            <Button
-              type="submit"
-              loading={loading}
-            >
-              Acessar
-            </Button>
-          </form>
-          <Link href="/signup" legacyBehavior>
-            <a className={styles.text}>Não possui uma conta? Cadastre-se</a>
-            </Link>
-        </div>
       </div>
-
+    </div>
     </>
   )
 }
 
 
-export const getServerSideProps =  canSSRGuest(async (ctx)=>{
+export const getServerSideProps = canSSRGuest(async (ctx) => {
+  
   return {
-    props:{}
+    props: {}
   }
 })
