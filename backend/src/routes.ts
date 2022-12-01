@@ -47,7 +47,7 @@ router.put("/order/update", isAuth, new SendOrderController().handle)
 
 router.get("/orders", isAuth, new ListOrderController().handle)
 
-router.get("/orders/detail", isAuth, new DetailOrderController().handle)
+router.get("/order/detail", isAuth, new DetailOrderController().handle)
 
 
 router.put("/order/finish", isAuth, new FinishOrderController().handle)
